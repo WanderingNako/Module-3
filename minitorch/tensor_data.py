@@ -44,7 +44,10 @@ def index_to_position(index: Index, strides: Strides) -> int:
     """
 
     # TODO: Implement for Task 2.1.
-    return int(np.dot(index, strides))
+    position = 0
+    for ind, stride in zip(index, strides):
+        position += ind * stride
+    return int(position)
 
 
 def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
@@ -61,9 +64,10 @@ def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
 
     """
     # TODO: Implement for Task 2.1.
+    cur = ordinal + 0
     for i in range(len(shape) - 1, -1, -1):
-        out_index[i] = ordinal % shape[i]
-        ordinal //= shape[i]
+        out_index[i] = cur % shape[i]
+        cur = cur // shape[i]
 
 
 def broadcast_index(
@@ -87,18 +91,24 @@ def broadcast_index(
     """
     # TODO: Implement for Task 2.2.
     # 计算维度差异
-    offset = len(big_shape) - len(shape)
+    # offset = len(big_shape) - len(shape)
 
-    # 遍历小张量的每个维度
-    for i in range(len(shape)):
-        # 对应大张量中的维度索引
-        big_i = i + offset
-        # 如果小张量该维度为1，使用索引0（广播规则）
-        # 否则使用大张量对应位置的索引
-        if shape[i] == 1:
-            out_index[i] = 0
+    # # 遍历小张量的每个维度
+    # for i in range(len(shape)):
+    #     # 对应大张量中的维度索引
+    #     big_i = i + offset
+    #     # 如果小张量该维度为1，使用索引0（广播规则）
+    #     # 否则使用大张量对应位置的索引
+    #     if shape[i] == 1:
+    #         out_index[i] = 0
+    #     else:
+    #         out_index[i] = big_index[big_i]
+    for i, s in enumerate(shape):
+        if s > 1:
+            out_index[i] = big_index[i + (len(big_shape) - len(shape))]
         else:
-            out_index[i] = big_index[big_i]
+            out_index[i] = 0
+    return None
     
 
 
