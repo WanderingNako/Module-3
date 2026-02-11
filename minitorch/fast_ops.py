@@ -172,15 +172,15 @@ def tensor_map(
         for i in prange(size):
             out_index = np.zeros(len(out_shape), dtype=np.int32)
             in_index = np.zeros(len(in_shape), dtype=np.int32)
-            # same = len(out_shape) == len(in_shape)
-            # if same:
-            #     for k in range(len(out_shape)):
-            #         if out_shape[k] != in_shape[k] or out_strides[k] != in_strides[k]:
-            #             same = False
-            #             break
-            # if same:
-            #     out[i] = fn(in_storage[i])
-            #     continue
+            same = len(out_shape) == len(in_shape)
+            if same:
+                for k in range(len(out_shape)):
+                    if out_shape[k] != in_shape[k] or out_strides[k] != in_strides[k]:
+                        same = False
+                        break
+            if same:
+                out[i] = fn(in_storage[i])
+                continue
             to_index(i, out_shape, out_index)
             broadcast_index(out_index, out_shape, in_shape, in_index)
             in_pos = index_to_position(in_index, in_strides)
@@ -230,23 +230,23 @@ def tensor_zip(
             out_index = np.zeros(len(out_shape), dtype=np.int32)
             a_index = np.zeros(len(a_shape), dtype=np.int32)
             b_index = np.zeros(len(b_shape), dtype=np.int32)
-            # same = (
-            #     len(out_shape) == len(a_shape)
-            #     and len(out_shape) == len(b_shape)
-            # )
-            # if same:
-            #     for k in range(len(out_shape)):
-            #         if (
-            #             out_shape[k] != a_shape[k]
-            #             or out_shape[k] != b_shape[k]
-            #             or out_strides[k] != a_strides[k]
-            #             or out_strides[k] != b_strides[k]
-            #         ):
-            #             same = False
-            #             break
-            # if same:
-            #     out[i] = fn(a_storage[i], b_storage[i])
-            #     continue
+            same = (
+                len(out_shape) == len(a_shape)
+                and len(out_shape) == len(b_shape)
+            )
+            if same:
+                for k in range(len(out_shape)):
+                    if (
+                        out_shape[k] != a_shape[k]
+                        or out_shape[k] != b_shape[k]
+                        or out_strides[k] != a_strides[k]
+                        or out_strides[k] != b_strides[k]
+                    ):
+                        same = False
+                        break
+            if same:
+                out[i] = fn(a_storage[i], b_storage[i])
+                continue
             to_index(i, out_shape, out_index)
             broadcast_index(out_index, out_shape, a_shape, a_index)
             broadcast_index(out_index, out_shape, b_shape, b_index)

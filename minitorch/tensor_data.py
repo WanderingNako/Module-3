@@ -91,25 +91,18 @@ def broadcast_index(
     """
     # TODO: Implement for Task 2.2.
     # 计算维度差异
-    # offset = len(big_shape) - len(shape)
+    offset = len(big_shape) - len(shape)
 
-    # # 遍历小张量的每个维度
-    # for i in range(len(shape)):
-    #     # 对应大张量中的维度索引
-    #     big_i = i + offset
-    #     # 如果小张量该维度为1，使用索引0（广播规则）
-    #     # 否则使用大张量对应位置的索引
-    #     if shape[i] == 1:
-    #         out_index[i] = 0
-    #     else:
-    #         out_index[i] = big_index[big_i]
-    for i, s in enumerate(shape):
-        if s > 1:
-            out_index[i] = big_index[i + (len(big_shape) - len(shape))]
-        else:
+    # 遍历小张量的每个维度
+    for i in range(len(shape)):
+        # 对应大张量中的维度索引
+        big_i = i + offset
+        # 如果小张量该维度为1，使用索引0（广播规则）
+        # 否则使用大张量对应位置的索引
+        if shape[i] == 1:
             out_index[i] = 0
-    return None
-    
+        else:
+            out_index[i] = big_index[big_i]
 
 
 def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
