@@ -36,14 +36,7 @@ class Linear(minitorch.Module):
 
     def forward(self, x):
         # TODO: Implement for Task 2.5.
-        M = x.shape[-2]
-        K = x.shape[-1]
-        N = self.out_size
-        A = x.contigous().view(M, 1, K)
-        B = self.weights.value.contiguous().view(1, N, K)
-        C = A * B
-        D = C.sum(-1).contiguous().view(M, N) + self.bias.value
-        return D
+        return (x @ self.weights.value) + self.bias.value
 
 
 def default_log_fn(epoch, total_loss, correct, losses):

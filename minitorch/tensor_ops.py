@@ -222,7 +222,16 @@ class SimpleOps(TensorOps):
 
     @staticmethod
     def matrix_multiply(a: "Tensor", b: "Tensor") -> "Tensor":
-        raise NotImplementedError("Not implemented in this assignment")
+        assert a.shape[-1] == b.shape[-2], "Last dim of a must match second to last dim of b for matmul."
+        M = a.shape[-2]
+        K = a.shape[-1]
+        N = b.shape[-1]
+        # view操作前需要contigous()
+        A = a.contiguous().view(M, 1, K)
+        B = b.contiguous().view(1, N, K)
+        C = A * B
+        D = C.sum(-1).contiguous().view(M, N)
+        return D
 
     is_cuda = False
 
